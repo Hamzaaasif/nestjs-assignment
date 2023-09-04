@@ -1,0 +1,7 @@
+#Ignore all the files that we dont want to copy into docker
+Dockerfile
+.dockeignore
+node_modules
+env.sample
+README.md
+dist

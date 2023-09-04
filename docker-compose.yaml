@@ -1,0 +1,32 @@
+version: '3.8'
+services: 
+  api: 
+    container_name: nest-test-container9
+    build: 
+      dockerfile: Dockerfile #
+      context: . 
+    ports: 
+      - '8080:8080'
+    volumes: 
+      - /usr/src/app 
+      - /usr/src/app/node_modules 
+    environment: 
+      - .env 
+    depends_on:
+      - postgres 
+
+  postgres: 
+    image: postgres:15.4
+    restart: always 
+    container_name: postgres-database 
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_DB=postgres"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+    ports:
+      - '5432:5432'
+
+volumes:
+  data:
