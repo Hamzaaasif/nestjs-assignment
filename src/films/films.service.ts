@@ -4,18 +4,24 @@ import { Repository } from 'typeorm';
 import { Film } from './films.entity';
 
 @Injectable()
-export class UserService {
+export class FilmService {
   constructor(
     @InjectRepository(Film) private readonly filmRepository: Repository<Film>,
   ) {}
 
   async createFilm(body: Partial<Film>): Promise<Film> {
-    Logger.debug(
-      'adding film function for creating films: %s',
-      JSON.stringify(body),
-    );
+    Logger.debug('adding film : %s', JSON.stringify(body));
     try {
-      Logger.debug('Adding new file: %s');
+      const findfilm = await this.filmRepository.findOne({
+        where: {
+          name: body.name,
+        },
+      });
+      if (findfilm)
+        throw new HttpException(
+          `Film with the name ${body.name} exists`,
+          HttpStatus.CONFLICT,
+        );
       const film: Film = new Film();
       film.name = body.name;
       film.description = body.description;
@@ -25,31 +31,37 @@ export class UserService {
       film.genre = body.genre;
       film.photo = body.photo;
 
+      Logger.debug('New file ==> %s', JSON.stringify(film));
+
       await this.filmRepository.save(film);
-      Logger.log('Film added to db');
       return film;
     } catch (error) {
-      Logger.error('film service, adding film error ', error.message);
+      Logger.error('film service, adding film function error ', error.message);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async getUserById(id: string): Promise<Film> | undefined {
+  async getFilm({ id, name }): Promise<Film> | undefined {
     try {
-      Logger.debug(`Get user byd id ==> ${id}`);
+      Logger.debug(`Get film by id ==> ${id} or name ==> ${name}`);
+      if (!id && !name)
+        throw new HttpException(
+          'Id or name is required',
+          HttpStatus.NOT_ACCEPTABLE,
+        );
       const film = await this.filmRepository.findOne({
         where: {
           id,
+          name: name,
         },
       });
-      Logger.debug('Film by email at getFilmById', JSON.stringify(film));
+      Logger.debug('Film by id ', JSON.stringify(film));
       if (!film) {
-        Logger.error('userService getUserbyId, user not found');
         throw new HttpException('Film not found', HttpStatus.NOT_FOUND);
       }
       return film;
     } catch (error) {
-      Logger.error('filmService getFilmById error', error);
+      Logger.error('filmService getFilmById error', error.message);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
