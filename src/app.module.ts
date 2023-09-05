@@ -10,6 +10,7 @@ import { getEnvPath } from './config/database/env';
 import { TypeOrmConfigService } from './config/database/database';
 import { AppController } from 'app.controller';
 import { FilmModule } from './films/films.module';
+import { FilmRatingModule } from './filmRating/filmsRating.module';
 
 const envFilePath: string = getEnvPath(join(`${__dirname}`, '..'));
 @Module({
@@ -22,6 +23,7 @@ const envFilePath: string = getEnvPath(join(`${__dirname}`, '..'));
     CoreModule,
     UsersModule,
     FilmModule,
+    FilmRatingModule,
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
     }),

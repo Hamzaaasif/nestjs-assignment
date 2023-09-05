@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { FilmsRating } from 'filmRating/filmsRating.entity';
 @Entity()
 export class Film {
   @PrimaryGeneratedColumn('uuid')
@@ -27,4 +29,7 @@ export class Film {
   @Column() genre: string;
 
   @Column() photo: string;
+
+  @OneToMany(() => FilmsRating, (rating) => rating.film)
+  ratings: FilmsRating[];
 }

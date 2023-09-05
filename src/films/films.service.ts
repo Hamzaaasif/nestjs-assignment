@@ -54,6 +54,7 @@ export class FilmService {
           id,
           name: name,
         },
+        relations: ['ratings'],
       });
       Logger.debug('Film by id ', JSON.stringify(film));
       if (!film) {
