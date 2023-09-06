@@ -2,14 +2,16 @@ import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Film } from './films.entity';
+import { SearchService } from 'elasticSearch/elasticSearch.service';
 
 @Injectable()
 export class FilmService {
   constructor(
     @InjectRepository(Film) private readonly filmRepository: Repository<Film>,
+    private readonly searchService: SearchService,
   ) {}
 
-  async createFilm(body: Partial<Film>): Promise<Film> {
+  async createFilm(body: Partial<Film>) {
     Logger.debug('adding film : %s', JSON.stringify(body));
     try {
       const findfilm = await this.filmRepository.findOne({
@@ -33,8 +35,11 @@ export class FilmService {
 
       Logger.debug('New file ==> %s', JSON.stringify(film));
 
-      await this.filmRepository.save(film);
-      return film;
+      const savedFilm = await this.filmRepository.save(film);
+
+      await this.searchService.indexFilm({ body, filmId: savedFilm.id });
+
+      return savedFilm;
     } catch (error) {
       Logger.error('film service, adding film function error ', error.message);
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

@@ -7,7 +7,7 @@ export class FilmController {
   constructor(private readonly filmService: FilmService) {}
 
   @Post('addFilm')
-  addFilm(@Body() body): Promise<Film> | undefined {
+  addFilm(@Body() body) {
     return this.filmService.createFilm(body);
   }
 
