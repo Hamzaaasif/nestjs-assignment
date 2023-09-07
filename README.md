@@ -40,6 +40,7 @@ $ yarn run dev
 $ yarn run build
 
 ```
+## RUNNING WITH DOCKER
 ### Run production server
 
 ```bash
@@ -47,11 +48,20 @@ $ yarn run build
 $ yarn run start:prod
 
 ```
+### Access the docker instance
+``` bash
+# Server is running at 
 
+http://localhost:8080/
+
+# Kibana
+http://localhost:5601/
+
+```
 ### Run with docker
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
 ### Stop docker
