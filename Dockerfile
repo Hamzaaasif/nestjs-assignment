@@ -21,4 +21,4 @@ RUN npm run build
 EXPOSE 8080
 
 # start the server
-CMD [ "npm", "start:prod" ]
+CMD [ "npm", "start" ]
